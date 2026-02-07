@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be My Valentine?</title>
+    
+    <!-- Import a cute font -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Import confetti library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #ffe6e6; /* Light pink background */
+            font-family: 'Nunito', sans-serif;
+            overflow: hidden; /* Prevent scrolling when button gets huge */
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+        }
+
+        h1 {
+            color: #ff4d6d;
+            font-family: 'Fredoka One', cursive;
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .gif-container img {
+            width: 250px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Fredoka One', cursive;
+        }
+
+        #yesBtn {
+            background-color: #2ecc71;
+            color: white;
+            box-shadow: 0 4px 0 #27ae60;
+        }
+
+        #noBtn {
+            background-color: #ff4d6d;
+            color: white;
+            box-shadow: 0 4px 0 #d93856;
+        }
+
+        /* Success Message styling (Hidden by default) */
+        #success-message {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- FIRST SCREEN: The Question -->
+        <div id="question-screen">
+            <!-- Replace the src below with any cute gif URL you find on Giphy -->
+            <div class="gif-container">
+                <img id="main-image" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcDdtZ2JiZDR0a3lvMWF4OG8yc3p6Ymdvd3g2dXh4Z3c4aGjlNnc4eiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/cLS1cfxvGOPVpf9g3y/giphy.gif" alt="Cute Bear">
+            </div>
+            
+            <h1 id="main-text">Will you be my Valentine?</h1>
+            
+            <div class="buttons">
+                <button class="btn" id="yesBtn" onclick="clickYes()">Yes</button>
+                <button class="btn" id="noBtn" onclick="clickNo()">No</button>
+            </div>
+        </div>
+
+        <!-- SECOND SCREEN: The Success Message -->
+        <div id="success-message">
+            <div class="gif-container">
+                <img src="https://media.giphy.com/media/gDzteZ2rF975N2206B/giphy.gif" alt="Happy Hug">
+            </div>
+            <h1>YEAYYYY! see you on the 14th! ❤️</h1>
+        </div>
+    </div>
+
+    <script>
+        let noClickCount = 0;
+        const noBtn = document.getElementById("noBtn");
+        const yesBtn = document.getElementById("yesBtn");
+        const mainText = document.getElementById("main-text");
+        const mainImage = document.getElementById("main-image");
+
+        // Texts to show when she clicks "No"
+        const noTexts = [
+            "Are you sure?", 
+            "Really sure?", 
+            "Think again!", 
+            "Last chance!", 
+            "Surely not?", 
+            "You might regret this!", 
+            "Give it another thought!", 
+            "Are you absolutely certain?", 
+            "This could be a mistake!", 
+            "Have a heart!", 
+            "Don't be so cold!", 
+            "Change of heart?", 
+            "Wouldn't you reconsider?", 
+            "Is that your final answer?", 
+            "You're breaking my heart ;("
+        ];
+
+        function clickNo() {
+            noClickCount++;
+            
+            // Change the text of the No button randomly
+            const randomText = noTexts[Math.min(noClickCount, noTexts.length - 1)];
+            noBtn.innerText = randomText;
+
+            // Make the Yes button bigger
+            const currentFontSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
+            const currentPadding = parseFloat(window.getComputedStyle(yesBtn).padding);
+            
+            yesBtn.style.fontSize = `${currentFontSize * 1.5}px`;
+            yesBtn.style.padding = `${currentPadding * 1.2}px`;
+        }
+
+        function clickYes() {
+            // Hide the question
+            document.getElementById("question-screen").style.display = "none";
+            // Show the success message
+            document.getElementById("success-message").style.display = "block";
+            
+            // Trigger Confetti
+            var duration = 3 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+            function randomInRange(min, max) {
+              return Math.random() * (max - min) + min;
+            }
+
+            var interval = setInterval(function() {
+              var timeLeft = animationEnd - Date.now();
+
+              if (timeLeft <= 0) {
+                return clearInterval(interval);
+              }
+
+              var particleCount = 50 * (timeLeft / duration);
+              confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+              confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
+        }
+    </script>
+</body>
+</html>
