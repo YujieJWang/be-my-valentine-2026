@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Be My Valentine?</title>
     
-    <!-- Import a cute font -->
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Import confetti library -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
@@ -17,36 +15,54 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #ffe6e6; /* Light pink background */
+            background-color: #ffe6e6;
             font-family: 'Nunito', sans-serif;
-            overflow: hidden; /* Prevent scrolling when button gets huge */
+            /* Allow scrolling if the button gets absolutely massive */
+            overflow: hidden; 
+            padding: 20px; /* Adds space from edges on mobile */
+            box-sizing: border-box;
         }
 
         .container {
             text-align: center;
             position: relative;
+            width: 100%;
+            max-width: 600px;
         }
 
         h1 {
             color: #ff4d6d;
             font-family: 'Fredoka One', cursive;
-            font-size: 3rem;
+            /* Responsive font size: minimum 1.5rem, prefers 5vw, max 3rem */
+            font-size: clamp(1.5rem, 5vw, 3rem); 
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        /* Container to keep images a consistent size */
+        .gif-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 250px; /* Fixed height to stop layout jumping */
             margin-bottom: 20px;
         }
 
         .gif-container img {
-            width: 250px;
+            max-width: 100%;
+            max-height: 100%; /* Ensures image fits within the 250px height */
+            width: auto;
             border-radius: 15px;
-            margin-bottom: 20px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            object-fit: contain;
         }
 
         .buttons {
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 15px;
             align-items: center;
-            flex-wrap: wrap;
+            flex-wrap: wrap; /* Allows buttons to stack on very small screens */
         }
 
         .btn {
@@ -57,12 +73,16 @@
             cursor: pointer;
             transition: all 0.3s ease;
             font-family: 'Fredoka One', cursive;
+            /* Prevent user from selecting text inside button */
+            user-select: none; 
+            -webkit-tap-highlight-color: transparent;
         }
 
         #yesBtn {
             background-color: #2ecc71;
             color: white;
             box-shadow: 0 4px 0 #27ae60;
+            z-index: 10; /* Ensures yes button goes on top of No button if it gets huge */
         }
 
         #noBtn {
@@ -71,9 +91,14 @@
             box-shadow: 0 4px 0 #d93856;
         }
 
-        /* Success Message styling (Hidden by default) */
         #success-message {
             display: none;
+        }
+        
+        /* Special styling for the success text to make it readable */
+        #success-message h1 {
+            font-size: clamp(1.2rem, 4vw, 2.5rem);
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -82,8 +107,8 @@
     <div class="container">
         <!-- FIRST SCREEN: The Question -->
         <div id="question-screen">
-            <!-- Replace the src below with any cute gif URL you find on Giphy -->
             <div class="gif-container">
+                <!-- Starts with sad1.jpg -->
                 <img id="main-image" src="sad1.jpg" alt="Cute Bear">
             </div>
             
@@ -100,11 +125,13 @@
             <div class="gif-container">
                 <img src="happy1.jpg" alt="Happy Hug">
             </div>
+            <!-- Your custom text -->
             <h1>yayyyy! see you at the tropica on the 8th at 530pm! dress prettily, it's a nice restaurant (i hope) hehehe <3</h1>
         </div>
     </div>
 
     <script>
+        // Your specific images
         const images = [
             "sad1.jpg", 
             "sad2.jpg", 
@@ -124,7 +151,7 @@
         const yesBtn = document.getElementById("yesBtn");
         const mainImage = document.getElementById("main-image");
 
-        // Texts to show when she clicks "No"
+        // Your specific texts (I fixed the typo in 'give')
         const noTexts = [
             "are you sure?", 
             "really sure?", 
@@ -132,7 +159,7 @@
             "last chance!", 
             "surely not?", 
             "you might regret this!", 
-            "ghive it another thought!", 
+            "give it another thought!", 
             "are you absolutely certain?", 
             "this could be a mistake!", 
             "have a heart!", 
@@ -151,11 +178,15 @@
             noBtn.innerText = randomText;
 
             // B. Make Yes Button Bigger
-            const currentFontSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
-            yesBtn.style.fontSize = `${currentFontSize * 1.5}px`;
+            // We use a simpler multiplication here to ensure it works on mobile
+            const computedStyle = window.getComputedStyle(yesBtn);
+            const currentFontSize = parseFloat(computedStyle.fontSize);
+            const currentPadding = parseFloat(computedStyle.paddingTop);
+            
+            yesBtn.style.fontSize = `${currentFontSize * 1.4}px`;
+            yesBtn.style.padding = `${currentPadding * 1.1}px ${currentPadding * 2 * 1.1}px`;
             
             // C. CHANGE THE IMAGE
-            // This cycles through the list. If you reach the end, it goes back to start.
             imageIndex = (imageIndex + 1) % images.length; 
             mainImage.src = images[imageIndex];
         }
