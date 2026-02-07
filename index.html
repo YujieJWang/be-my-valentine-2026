@@ -84,7 +84,7 @@
         <div id="question-screen">
             <!-- Replace the src below with any cute gif URL you find on Giphy -->
             <div class="gif-container">
-                <img id="main-image" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcDdtZ2JiZDR0a3lvMWF4OG8yc3p6Ymdvd3g2dXh4Z3c4aGjlNnc4eiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/cLS1cfxvGOPVpf9g3y/giphy.gif" alt="Cute Bear">
+                <img id="main-image" src="sad1.jpg" alt="Cute Bear">
             </div>
             
             <h1 id="main-text">will you be my valentine?</h1>
@@ -98,17 +98,30 @@
         <!-- SECOND SCREEN: The Success Message -->
         <div id="success-message">
             <div class="gif-container">
-                <img src="https://media.giphy.com/media/gDzteZ2rF975N2206B/giphy.gif" alt="Happy Hug">
+                <img src="happy.jpg" alt="Happy Hug">
             </div>
-            <h1>yayyyy! see you at the tropica on the 8th at 530pm! <3</h1>
+            <h1>yayyyy! see you at the tropica on the 8th at 530pm! dress prettily, it's a nice restaurant (i hope) hehehe <3</h1>
         </div>
     </div>
 
     <script>
+        const images = [
+            "sad1.jpg", 
+            "sad2.jpg", 
+            "sad3.jpg",
+            "sad4.jpg",
+            "sad5.jpg", 
+            "sad6.jpg", 
+            "sad7.jpg",
+            "sad8.jpg",
+            "sad9.jpg",
+            "sad10.jpg",
+        ];
+        
+        let imageIndex = 0;
         let noClickCount = 0;
         const noBtn = document.getElementById("noBtn");
         const yesBtn = document.getElementById("yesBtn");
-        const mainText = document.getElementById("main-text");
         const mainImage = document.getElementById("main-image");
 
         // Texts to show when she clicks "No"
@@ -133,40 +146,34 @@
         function clickNo() {
             noClickCount++;
             
-            // Change the text of the No button randomly
+            // A. Change Text
             const randomText = noTexts[Math.min(noClickCount, noTexts.length - 1)];
             noBtn.innerText = randomText;
 
-            // Make the Yes button bigger
+            // B. Make Yes Button Bigger
             const currentFontSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
-            const currentPadding = parseFloat(window.getComputedStyle(yesBtn).padding);
-            
             yesBtn.style.fontSize = `${currentFontSize * 1.5}px`;
-            yesBtn.style.padding = `${currentPadding * 1.2}px`;
+            
+            // C. CHANGE THE IMAGE
+            // This cycles through the list. If you reach the end, it goes back to start.
+            imageIndex = (imageIndex + 1) % images.length; 
+            mainImage.src = images[imageIndex];
         }
 
         function clickYes() {
-            // Hide the question
             document.getElementById("question-screen").style.display = "none";
-            // Show the success message
             document.getElementById("success-message").style.display = "block";
             
-            // Trigger Confetti
+            // Confetti Logic
             var duration = 3 * 1000;
             var animationEnd = Date.now() + duration;
             var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
 
-            function randomInRange(min, max) {
-              return Math.random() * (max - min) + min;
-            }
+            function randomInRange(min, max) { return Math.random() * (max - min) + min; }
 
             var interval = setInterval(function() {
               var timeLeft = animationEnd - Date.now();
-
-              if (timeLeft <= 0) {
-                return clearInterval(interval);
-              }
-
+              if (timeLeft <= 0) return clearInterval(interval);
               var particleCount = 50 * (timeLeft / duration);
               confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
               confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
